@@ -4,21 +4,85 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Life Sim Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        input[type="text"], input[type="password"] {
+            width: 80%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .signup-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .google-btn {
+            background-color: #4285F4;
+            color: white;
+        }
+        .login-btn {
+            background-color: #555;
+            color: white;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to Life Sim!</h1>
-    <div id="g_id_onload"
-         data-client_id="461434289159-ga3odshnftie2n8g15tl28lgrgtoriib.apps.googleusercontent.com"
-         data-callback="handleCredentialResponse">
+    <div class="container">
+        <h1>Welcome to Life Sim!</h1>
+        <p>Login to get started:</p>
+        
+        <!-- Login Form for Non-Google Users -->
+        <form id="login-form">
+            <div class="form-group">
+                <label for="username">Username:</label><br>
+                <input type="text" id="username" name="username" placeholder="Enter your username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label><br>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+            <button type="submit" class="login-btn">Login</button>
+        </form>
+
+        <!-- Sign Up and Google Login Buttons -->
+        <div>
+            <button class="signup-btn" onclick="location.href='https://toonigy.github.io/world-of-life/signup.html';">Sign Up</button>
+            <div id="g_id_onload"
+                 data-client_id="461434289159-ga3odshnftie2n8g15tl28lgrgtoriib.apps.googleusercontent.com"
+                 data-callback="handleCredentialResponse">
+            </div>
+            <div class="g_id_signin google-btn"
+                 data-type="standard"
+                 data-size="large"
+                 data-theme="outline"
+                 data-text="sign_in_with"
+                 data-shape="rectangular"
+                 data-logo_alignment="left">
+            </div>
+        </div>
     </div>
-    <div class="g_id_signin" 
-         data-type="standard" 
-         data-size="large" 
-         data-theme="outline" 
-         data-text="sign_in_with" 
-         data-shape="rectangular" 
-         data-logo_alignment="left">
-    </div>
+
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script src="script.js"></script>
 </body>
 </html>
