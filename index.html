@@ -50,7 +50,7 @@
     <div class="container">
         <h1>Welcome to Life Sim!</h1>
         <p>Login to get started:</p>
-        
+
         <!-- Login Form for Non-Google Users -->
         <form id="login-form">
             <div class="form-group">
@@ -67,9 +67,12 @@
         <!-- Sign Up and Google Login Buttons -->
         <div>
             <button class="signup-btn" onclick="location.href='https://toonigy.github.io/world-of-life/signup.html';">Sign Up</button>
+            
+            <!-- Google Sign-In -->
             <div id="g_id_onload"
                  data-client_id="461434289159-ga3odshnftie2n8g15tl28lgrgtoriib.apps.googleusercontent.com"
-                 data-callback="handleCredentialResponse">
+                 data-ux_mode="redirect"
+                 data-login_uri="https://toonigy.github.io/world-of-life/dashboard.html">
             </div>
             <div class="g_id_signin google-btn"
                  data-type="standard"
@@ -83,6 +86,5 @@
     </div>
 
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <script src="script.js"></script>
 </body>
 </html>
