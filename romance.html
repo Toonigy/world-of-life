@@ -35,7 +35,7 @@
 </head>
 <body>
     <h1>Romance</h1>
-    <p>Build relationships with characters and unlock new milestones!</p>
+    <p>Build relationships with characters, propose, and get married!</p>
 
     <div id="characters"></div>
 
@@ -46,11 +46,11 @@
             { id: "jordan", name: "Jordan", relationshipLevel: 0 }
         ];
 
-        // Initialize character data in localStorage if not already set
+        // Initialize relationship and marriage data in localStorage
         if (!localStorage.getItem("relationships")) {
             const initialRelationships = {};
             characters.forEach(char => {
-                initialRelationships[char.id] = { name: char.name, level: 0 };
+                initialRelationships[char.id] = { name: char.name, level: 0, married: false };
             });
             localStorage.setItem("relationships", JSON.stringify(initialRelationships));
         }
@@ -68,16 +68,25 @@
                 const charDiv = document.createElement("div");
                 charDiv.className = "character";
 
-                charDiv.innerHTML = `
-                    <h2>${char.name}</h2>
-                    <p>Relationship Level: <span id="level-${charId}">${char.level}</span></p>
-                    <button class="button" onclick="increaseRelationship('${charId}')">Spend Time</button>
-                    <button class="button hidden" id="propose-${charId}" onclick="propose('${charId}')">Propose</button>
-                `;
+                // Dynamic content based on marriage status
+                if (char.married) {
+                    charDiv.innerHTML = `
+                        <h2>${char.name}</h2>
+                        <p>Relationship Level: ${char.level}</p>
+                        <p>Status: Married</p>
+                    `;
+                } else {
+                    charDiv.innerHTML = `
+                        <h2>${char.name}</h2>
+                        <p>Relationship Level: <span id="level-${charId}">${char.level}</span></p>
+                        <button class="button" onclick="increaseRelationship('${charId}')">Spend Time</button>
+                        <button class="button hidden" id="propose-${charId}" onclick="propose('${charId}')">Propose</button>
+                    `;
 
-                // Show the "Propose" button if relationship level is >= 100
-                if (char.level >= 100) {
-                    charDiv.querySelector(`#propose-${charId}`).classList.remove("hidden");
+                    // Show the "Propose" button if relationship level is >= 100
+                    if (char.level >= 100) {
+                        charDiv.querySelector(`#propose-${charId}`).classList.remove("hidden");
+                    }
                 }
 
                 charactersDiv.appendChild(charDiv);
@@ -86,7 +95,6 @@
 
         // Increase relationship level
         function increaseRelationship(charId) {
-            // Ensure the relationship level is a number
             let currentLevel = parseInt(relationships[charId].level) || 0; // Parse as number or default to 0
             relationships[charId].level = currentLevel + 10; // Increase by 10 points
 
@@ -99,8 +107,21 @@
 
         // Propose to a character
         function propose(charId) {
-            alert(`You proposed to ${relationships[charId].name}!`);
-            // You can add additional logic here for marriage, etc.
+            if (relationships[charId].level >= 100) {
+                const confirmMarriage = confirm(`Do you want to marry ${relationships[charId].name}?`);
+                if (confirmMarriage) {
+                    relationships[charId].married = true;
+                    alert(`You are now married to ${relationships[charId].name}!`);
+                }
+            } else {
+                alert("Your relationship level is not high enough to propose.");
+            }
+
+            // Save updated relationships back to localStorage
+            localStorage.setItem("relationships", JSON.stringify(relationships));
+
+            // Update the UI
+            updateRelationships();
         }
 
         // Initial load
