@@ -40,6 +40,10 @@
             <p id="user-money">$0</p>
         </div>
         <div class="section">
+            <h2>Your Gender</h2>
+            <p id="user-gender">Gender not set yet.</p>
+        </div>
+        <div class="section">
             <h2>Your Marriage Status</h2>
             <p id="marriage-status">You are not married to anyone.</p>
         </div>
@@ -88,6 +92,10 @@
             document.getElementById("user-id").innerText = currentUser.id;
             document.getElementById("user-money").innerText = `$${currentUser.money || 0}`;
 
+            // Display gender
+            const gender = localStorage.getItem("userGender") || "Not set";
+            document.getElementById("user-gender").innerText = gender;
+
             // Check marriage status
             const relationships = JSON.parse(localStorage.getItem("relationships")) || {};
             const marriedTo = Object.values(relationships).filter(rel => rel.married);
@@ -101,6 +109,7 @@
         // Log out function
         function logout() {
             localStorage.removeItem("currentUser");
+            localStorage.removeItem("userGender");
             alert("You have been logged out.");
             window.location.href = "index.html";
         }
