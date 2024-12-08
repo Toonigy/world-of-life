@@ -53,23 +53,36 @@
     </div>
 
     <script>
-        // Ensure the user is logged in
+        // Check login status and load user data
         function checkLogin() {
-            const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+            const currentUserJSON = localStorage.getItem("currentUser");
 
-            if (!currentUser || !currentUser.id) {
-                // Redirect to login if not logged in
+            if (!currentUserJSON) {
+                console.warn("No currentUser found. Redirecting to login.");
                 window.location.href = "login.html";
                 return null;
             }
 
-            return currentUser;
+            try {
+                const currentUser = JSON.parse(currentUserJSON);
+                if (!currentUser.id) {
+                    console.error("currentUser is missing an ID. Redirecting to login.");
+                    window.location.href = "login.html";
+                    return null;
+                }
+
+                return currentUser;
+            } catch (error) {
+                console.error("Error parsing currentUser:", error);
+                window.location.href = "login.html";
+                return null;
+            }
         }
 
         // Load dashboard details
         function loadDashboard() {
             const currentUser = checkLogin();
-            if (!currentUser) return; // If not logged in, stop execution
+            if (!currentUser) return; // Stop execution if not logged in
 
             // Display user ID and money
             document.getElementById("user-id").innerText = currentUser.id;
