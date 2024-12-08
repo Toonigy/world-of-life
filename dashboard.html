@@ -26,6 +26,11 @@
             color: #4CAF50;
             margin-top: 20px;
         }
+        .user-id {
+            font-size: 1.2em;
+            color: #333;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -66,18 +71,33 @@
         <p>Your Money: $<span id="money-display">0</span></p>
     </div>
 
+    <div class="user-id">
+        <p>Your User ID: <span id="user-id"></span></p>
+    </div>
+
     <script>
-        // Display current house if the player owns one
+        // Ensure the user ID is only generated once
         window.onload = function() {
-            // Check for house info
+            const userMoney = localStorage.getItem("userMoney") || 0;
+            const userID = localStorage.getItem("userID");
+
+            // If the user doesn't have an ID, generate one
+            if (!userID) {
+                const newUserID = 'user_' + Date.now();  // Use timestamp for a unique ID
+                localStorage.setItem("userID", newUserID);
+            }
+
+            // Display the user's money and user ID
+            document.getElementById("money-display").innerText = userMoney;
+            document.getElementById("user-id").innerText = localStorage.getItem("userID");
+            
+            // Display the house info if the user has one
             const house = localStorage.getItem("house");
             if (house) {
                 document.getElementById("house-info").innerText = `You own a ${house}.`;
+            } else {
+                document.getElementById("house-info").innerText = "You don't own a house yet.";
             }
-
-            // Get the money from localStorage and display it
-            const money = localStorage.getItem("userMoney") || 1000;  // Default to 1000 if not set
-            document.getElementById("money-display").innerText = money;
         };
     </script>
 </body>
