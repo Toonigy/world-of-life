@@ -3,129 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <title>Login</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            text-align: center;
             padding: 20px;
         }
         .button {
-            margin-top: 20px;
+            display: inline-block;
+            margin: 10px 5px;
             padding: 10px 20px;
             background-color: #4CAF50;
             color: white;
-            border: none;
+            text-decoration: none;
             border-radius: 5px;
             cursor: pointer;
+            text-align: center;
         }
         .button:hover {
             background-color: #45a049;
         }
-        .form-container {
-            margin-top: 20px;
-            max-width: 300px;
-            margin-left: auto;
-            margin-right: auto;
-            text-align: left;
-        }
-        .form-container label {
-            display: block;
-            margin-bottom: 5px;
-        }
-        .form-container input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
     </style>
 </head>
 <body>
-
-    <h1>Welcome to World of Life!</h1>
-    <p>Please log in to continue.</p>
-
-    <!-- Google Sign-In Button -->
-    <div>
-        <button class="button" id="google-login-button">Login with Google</button>
-    </div>
-
-    <hr>
-
-    <!-- Manual Login Form -->
-    <div class="form-container">
-        <form id="manual-login-form">
+    <h1>Login</h1>
+    <div id="login-options">
+        <button class="button" onclick="loginWithGoogle()">Log in with Google</button>
+        <h2>Or</h2>
+        <form id="login-form" onsubmit="manualLogin(event)">
             <label for="username">Username:</label>
-            <input type="text" id="username" name="username" placeholder="Enter your username" required>
-            
+            <input type="text" id="username" required>
+            <br>
             <label for="password">Password:</label>
-            <input type="password" id="password" name="password" placeholder="Enter your password" required>
-            
-            <button type="submit" class="button">Login</button>
+            <input type="password" id="password" required>
+            <br>
+            <button type="submit" class="button">Log in</button>
         </form>
-        <p>Don't have an account? <a href="https://toonigy.github.io/world-of-life/signup.html">Sign Up</a></p>
     </div>
 
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
     <script>
-        // Check if the user is already logged in
-        window.onload = function() {
-            const userID = localStorage.getItem("userID");
-
-            // If user is already logged in, redirect to the dashboard
-            if (userID) {
-                window.location.href = "https://toonigy.github.io/world-of-life/dashboard.html";
-            }
-        }
-
-        // Handle manual login
-        document.getElementById('manual-login-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value.trim();
-
-            // Example authentication logic (replace with your own backend integration)
-            if (username && password) {
-                const userID = 'user_' + Date.now(); // Generate a simple user ID for demonstration
-                localStorage.setItem("userID", userID);
-                localStorage.setItem("userName", username);
-                alert('Login successful!');
-                window.location.href = "https://toonigy.github.io/world-of-life/dashboard.html";
-            } else {
-                alert('Invalid username or password. Please try again.');
-            }
-        });
-
         // Google login function
-        function onSignIn(googleUser) {
-            const profile = googleUser.getBasicProfile();
-            const userID = profile.getId();
-            const userName = profile.getName();
+        function loginWithGoogle() {
+            // Simulating Google login (use your Google API login logic here)
+            const user = {
+                id: 'user_12345',
+                name: 'John Doe',
+                email: 'johndoe@gmail.com',
+                money: 1000 // Example initial money
+            };
 
-            // Save the user info to localStorage
-            localStorage.setItem("userID", userID);
-            localStorage.setItem("userName", userName);
-
-            // Redirect to the dashboard after successful login
-            window.location.href = "https://toonigy.github.io/world-of-life/dashboard.html";
+            localStorage.setItem('currentUser', JSON.stringify(user));
+            window.location.href = 'dashboard.html';
         }
 
-        // Initialize Google Sign-In when the button is clicked
-        document.getElementById("google-login-button").onclick = function() {
-            gapi.load('auth2', function() {
-                gapi.auth2.init({
-                    client_id: '461434289159-ga3odshnftie2n8g15tl28lgrgtoriib.apps.googleusercontent.com'  // Replace with your actual Google OAuth Client ID
-                }).then(function() {
-                    const auth2 = gapi.auth2.getAuthInstance();
-                    auth2.signIn().then(onSignIn);
-                });
-            });
-        };
-    </script>
+        // Manual login function (for testing)
+        function manualLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
 
+            // Simulating manual login with username and password
+            const user = {
+                id: `user_${Date.now()}`,
+                name: username,
+                email: `${username}@example.com`,
+                money: 500 // Example initial money
+            };
+
+            localStorage.setItem('currentUser', JSON.stringify(user));
+            window.location.href = 'dashboard.html';
+        }
+
+        // Check if user is already logged in
+        window.onload = function() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (currentUser) {
+                // If user is already logged in, redirect to the dashboard
+                window.location.href = 'dashboard.html';
+            }
+        }
+    </script>
 </body>
 </html>
