@@ -21,6 +21,11 @@
         .dashboard-button:hover {
             background-color: #45a049;
         }
+        .money-display {
+            font-size: 1.5em;
+            color: #4CAF50;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -57,14 +62,22 @@
         <p id="house-info">You don't own a house yet.</p>
     </div>
 
+    <div class="money-display">
+        <p>Your Money: $<span id="money-display">0</span></p>
+    </div>
+
     <script>
         // Display current house if the player owns one
         window.onload = function() {
+            // Check for house info
             const house = localStorage.getItem("house");
-
             if (house) {
                 document.getElementById("house-info").innerText = `You own a ${house}.`;
             }
+
+            // Get the money from localStorage and display it
+            const money = localStorage.getItem("userMoney") || 1000;  // Default to 1000 if not set
+            document.getElementById("money-display").innerText = money;
         };
     </script>
 </body>
