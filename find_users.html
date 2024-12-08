@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Other Users</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .user-card {
+            display: inline-block;
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            width: 200px;
+            text-align: center;
+        }
+        .search-input {
+            margin-top: 20px;
+            padding: 10px;
+            width: 200px;
+            font-size: 16px;
+        }
+        .user-card button {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .user-card button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Find Other Players</h1>
+    <p>Search for players or browse the list of registered users.</p>
+
+    <input type="text" id="search" class="search-input" placeholder="Search by name" oninput="filterUsers()">
+    
+    <div id="user-list">
+        <!-- Users will be listed here -->
+    </div>
+
+    <script>
+        // Sample users list (in a real game, this would be fetched from a database)
+        const users = [
+            { name: "JohnDoe", gender: "Male", house: "Modern Apartment" },
+            { name: "JaneSmith", gender: "Female", house: "Luxury Mansion" },
+            { name: "AlexKing", gender: "Male", house: "Tiny Cottage" },
+            { name: "SarahLee", gender: "Female", house: "Modern Apartment" }
+        ];
+
+        // Function to display all users
+        function displayUsers(usersToDisplay) {
+            const userListContainer = document.getElementById("user-list");
+            userListContainer.innerHTML = ""; // Clear previous users list
+
+            usersToDisplay.forEach(user => {
+                const userCard = document.createElement("div");
+                userCard.classList.add("user-card");
+
+                userCard.innerHTML = `
+                    <h3>${user.name}</h3>
+                    <p>Gender: ${user.gender}</p>
+                    <p>House: ${user.house}</p>
+                    <button onclick="viewProfile('${user.name}')">View Profile</button>
+                `;
+                userListContainer.appendChild(userCard);
+            });
+        }
+
+        // Function to filter users based on the search input
+        function filterUsers() {
+            const searchQuery = document.getElementById("search").value.toLowerCase();
+            const filteredUsers = users.filter(user => user.name.toLowerCase().includes(searchQuery));
+            displayUsers(filteredUsers);
+        }
+
+        // Function to view a user profile (simple alert for now)
+        function viewProfile(userName) {
+            alert(`Viewing profile of ${userName}`);
+        }
+
+        // Display all users when the page loads
+        window.onload = function() {
+            displayUsers(users);
+        };
+    </script>
+</body>
+</html>
