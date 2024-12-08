@@ -9,9 +9,6 @@
             font-family: Arial, sans-serif;
             padding: 20px;
         }
-        .section {
-            margin-bottom: 20px;
-        }
         .button {
             display: inline-block;
             margin: 10px 5px;
@@ -26,96 +23,96 @@
         .button:hover {
             background-color: #45a049;
         }
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
     <h1>Welcome to Your Dashboard</h1>
-    <div id="dashboard">
-        <div class="section">
-            <h2>Your ID</h2>
-            <p id="user-id">Not logged in yet</p>
-        </div>
-        <div class="section">
-            <h2>Your Money</h2>
-            <p id="user-money">$0</p>
-        </div>
-        <div class="section">
-            <h2>Your Gender</h2>
-            <p id="user-gender">Gender not set yet.</p>
-        </div>
-        <div class="section">
-            <h2>Your Marriage Status</h2>
-            <p id="marriage-status">You are not married to anyone.</p>
-        </div>
-        <div class="section">
-            <button class="button" onclick="location.href='career.html'">Career Progress</button>
-            <button class="button" onclick="location.href='house_shop.html'">House Shop</button>
-            <button class="button" onclick="location.href='romance.html'">Romance</button>
-            <button class="button" onclick="location.href='find_users.html'">Find Other Users</button>
-            <button class="button" onclick="logout()">Log Out</button>
-        </div>
+    <p><strong>ID:</strong> <span id="user-id">Loading...</span></p>
+    <p><strong>Gender:</strong> <span id="user-gender">Loading...</span></p>
+    <p><strong>Money:</strong> $<span id="user-money">0</span></p>
+    <p><strong>Marriage Status:</strong> <span id="marriage-status">Single</span></p>
+
+    <button class="button" onclick="location.href='career_progress.html'">Career Progress</button>
+    <button class="button" onclick="location.href='house_shop.html'">House Shop</button>
+    <button class="button" onclick="location.href='find_users.html'">Find Other Users</button>
+
+    <button class="button hidden" id="interact-spouse" onclick="showSpouseOptions()">Interact with Spouse</button>
+
+    <div id="spouse-options" class="hidden">
+        <h2>Spouse Interactions</h2>
+        <button class="button" onclick="woohoo()">Woohoo</button>
     </div>
 
+    <button class="button" onclick="logout()">Log Out</button>
+
     <script>
-        // Check login status and load user data
-        function checkLogin() {
-            const currentUserJSON = localStorage.getItem("currentUser");
+        const userId = localStorage.getItem("userId");
+        const userGender = localStorage.getItem("userGender");
+        const userMoney = parseInt(localStorage.getItem("money") || "0", 10);
+        const relationships = JSON.parse(localStorage.getItem("relationships")) || {};
 
-            if (!currentUserJSON) {
-                console.warn("No currentUser found. Redirecting to login.");
-                window.location.href = "login.html";
-                return null;
-            }
-
-            try {
-                const currentUser = JSON.parse(currentUserJSON);
-                if (!currentUser.id) {
-                    console.error("currentUser is missing an ID. Redirecting to login.");
-                    window.location.href = "login.html";
-                    return null;
-                }
-
-                return currentUser;
-            } catch (error) {
-                console.error("Error parsing currentUser:", error);
-                window.location.href = "login.html";
-                return null;
-            }
-        }
-
-        // Load dashboard details
-        function loadDashboard() {
-            const currentUser = checkLogin();
-            if (!currentUser) return; // Stop execution if not logged in
-
-            // Display user ID and money
-            document.getElementById("user-id").innerText = currentUser.id;
-            document.getElementById("user-money").innerText = `$${currentUser.money || 0}`;
-
-            // Display gender
-            const gender = localStorage.getItem("userGender") || "Not set";
-            document.getElementById("user-gender").innerText = gender;
+        function updateDashboard() {
+            // Set user data
+            document.getElementById("user-id").innerText = userId || "Not logged in yet";
+            document.getElementById("user-gender").innerText = userGender || "Not set";
+            document.getElementById("user-money").innerText = userMoney;
 
             // Check marriage status
-            const relationships = JSON.parse(localStorage.getItem("relationships")) || {};
-            const marriedTo = Object.values(relationships).filter(rel => rel.married);
-            const marriageStatus = marriedTo.length
-                ? `You are married to: ${marriedTo.map(rel => rel.name).join(", ")}.`
-                : "You are not married to anyone.";
+            let marriageStatus = "Single";
+            let spouse = null;
+            for (let partner in relationships) {
+                if (relationships[partner].married) {
+                    marriageStatus = `Married to ${partner}`;
+                    spouse = partner;
+                    break;
+                }
+            }
 
             document.getElementById("marriage-status").innerText = marriageStatus;
+
+            // Show or hide the "Interact with Spouse" button
+            const interactButton = document.getElementById("interact-spouse");
+            if (spouse) {
+                interactButton.classList.remove("hidden");
+                interactButton.setAttribute("data-spouse", spouse); // Track spouse for interactions
+            } else {
+                interactButton.classList.add("hidden");
+            }
         }
 
-        // Log out function
+        function showSpouseOptions() {
+            const spouseOptions = document.getElementById("spouse-options");
+            spouseOptions.classList.remove("hidden");
+        }
+
+        function woohoo() {
+            const spouseName = document.getElementById("interact-spouse").getAttribute("data-spouse");
+            const playerGender = localStorage.getItem("userGender");
+            const spouseGender = spouseName === "alex" ? "Female" : "Male";
+
+            if (playerGender === "Female" && spouseGender === "Male") {
+                // Play pregnancy sound
+                const audio = new Audio("baby.ogg");
+                audio.play();
+
+                alert("You are now pregnant!");
+            } else {
+                alert(`You had a romantic moment with ${spouseName}!`);
+            }
+        }
+
         function logout() {
-            localStorage.removeItem("currentUser");
+            localStorage.removeItem("userId");
             localStorage.removeItem("userGender");
-            alert("You have been logged out.");
-            window.location.href = "index.html";
+            localStorage.removeItem("money");
+            localStorage.removeItem("relationships");
+            location.href = "login.html";
         }
 
-        // Initialize the dashboard
-        loadDashboard();
+        updateDashboard();
     </script>
 </body>
 </html>
