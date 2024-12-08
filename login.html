@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Life Sim - Login</title>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <title>Life Sim Game</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -33,103 +32,59 @@
             border-radius: 5px;
             cursor: pointer;
         }
-        .login-btn {
+        .signup-btn {
             background-color: #4CAF50;
             color: white;
         }
-        .google-signin {
+        .google-btn {
             background-color: #4285F4;
             color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
+        }
+        .login-btn {
+            background-color: #555;
+            color: white;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Login to Life Sim</h1>
-        
-        <!-- Login Form -->
-        <div id="login-form">
-            <form id="login-form-custom">
-                <div class="form-group">
-                    <label for="email">Email:</label><br>
-                    <input type="text" id="email" name="email" placeholder="Enter your email" required>
-                </div>
+        <h1>Welcome to Life Sim!</h1>
+        <p>Login to get started:</p>
 
-                <div class="form-group">
-                    <label for="password">Password:</label><br>
-                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
-                </div>
+        <!-- Login Form for Non-Google Users -->
+        <form id="login-form">
+            <div class="form-group">
+                <label for="username">Username:</label><br>
+                <input type="text" id="username" name="username" placeholder="Enter your username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label><br>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+            <button type="submit" class="login-btn">Login</button>
+        </form>
 
-                <button type="submit" class="login-btn">Login</button>
-            </form>
-
-            <p>Don't have an account? <a href="signup.html">Sign up here</a></p>
-        </div>
-
-        <div id="google-signin-button">
-            <button class="google-signin" id="google-sign-in-btn">Sign in with Google</button>
+        <!-- Sign Up and Google Login Buttons -->
+        <div>
+            <button class="signup-btn" onclick="location.href='https://toonigy.github.io/world-of-life/signup.html';">Sign Up</button>
+            
+            <!-- Google Sign-In -->
+            <div id="g_id_onload"
+                 data-client_id="461434289159-ga3odshnftie2n8g15tl28lgrgtoriib.apps.googleusercontent.com"
+                 data-ux_mode="redirect"
+                 data-login_uri="https://toonigy.github.io/world-of-life/dashboard.html">
+            </div>
+            <div class="g_id_signin google-btn"
+                 data-type="standard"
+                 data-size="large"
+                 data-theme="outline"
+                 data-text="sign_in_with"
+                 data-shape="rectangular"
+                 data-logo_alignment="left">
+            </div>
         </div>
     </div>
 
-    <script>
-        window.onload = function () {
-            // Initialize Google Sign-In
-            google.accounts.id.initialize({
-                client_id: "461434289159-ga3odshnftie2n8g15tl28lgrgtoriib.apps.googleusercontent.com",
-                callback: handleCredentialResponse
-            });
-
-            google.accounts.id.renderButton(
-                document.getElementById("google-sign-in-btn"),
-                { theme: "outline", size: "large" }
-            );
-
-            // Automatically prompt for Google login if not logged in
-            google.accounts.id.prompt();
-        }
-
-        // Handle Google Login Response
-        function handleCredentialResponse(response) {
-            const user = jwt_decode(response.credential);
-            // Store user data in localStorage
-            localStorage.setItem("user", JSON.stringify(user));
-            // Redirect to the dashboard
-            window.location.href = "https://toonigy.github.io/world-of-life/dashboard.html";
-        }
-
-        // Custom Login Form
-        document.getElementById("login-form-custom").addEventListener("submit", function (event) {
-            event.preventDefault();
-
-            // Get custom user input (email and password)
-            const email = document.getElementById("email").value;
-            const password = document.getElementById("password").value;
-
-            // Here you would typically validate against a backend server
-            // For now, simulate login and store user data
-            if (email && password) {
-                const user = {
-                    email: email,
-                    password: password,
-                    username: "Custom User" // Add more fields if needed
-                };
-                localStorage.setItem("user", JSON.stringify(user));
-                // Redirect to dashboard
-                window.location.href = "https://toonigy.github.io/world-of-life/dashboard.html";
-            } else {
-                alert("Invalid credentials!");
-            }
-        });
-
-        // Check if the user is already logged in when the page loads
-        const loggedInUser = localStorage.getItem("user");
-        if (loggedInUser) {
-            // If user is logged in, redirect directly to the dashboard
-            window.location.href = "https://toonigy.github.io/world-of-life/dashboard.html";
-        }
-    </script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </body>
 </html>
