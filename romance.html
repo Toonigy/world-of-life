@@ -3,50 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Life Sim - Romance System</title>
+    <title>Romance</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            text-align: center;
+            padding: 20px;
         }
-        .npc-list {
-            margin-top: 20px;
+        .character {
+            margin-bottom: 20px;
         }
-        .npc-button {
-            margin: 5px;
-            padding: 10px;
-            cursor: pointer;
+        .button {
+            display: inline-block;
+            margin: 10px 5px;
+            padding: 10px 20px;
             background-color: #4CAF50;
             color: white;
-            border: none;
+            text-decoration: none;
             border-radius: 5px;
+            cursor: pointer;
         }
-        .npc-button:hover {
+        .button:hover {
             background-color: #45a049;
         }
-        #interaction-options button {
-            margin-top: 10px;
+        .hidden {
+            display: none;
         }
     </style>
 </head>
 <body>
-    <h1>Romance System</h1>
+    <h1>Romance</h1>
+    <p>Build relationships with characters and unlock new milestones!</p>
 
-    <h2>Interact with NPCs:</h2>
-    <div class="npc-list">
-        <button class="npc-button" onclick="interactWithNPC('npc1')">Interact with Alex</button>
-        <button class="npc-button" onclick="interactWithNPC('npc2')">Interact with Jordan</button>
-    </div>
+    <div id="characters"></div>
 
-    <div id="interaction-options">
-        <!-- Interaction options will appear here based on NPC status -->
-    </div>
+    <script>
+        // Example character data
+        const characters = [
+            { id: "alex", name: "Alex", relationshipLevel: 0 },
+            { id: "jordan", name: "Jordan", relationshipLevel: 0 }
+        ];
 
-    <h2>Your Relationships:</h2>
-    <div id="relationship-status">
-        <!-- Relationship status will be updated here -->
-    </div>
+        // Initialize character data in localStorage if not already set
+        if (!localStorage.getItem("relationships")) {
+            const initialRelationships = {};
+            characters.forEach(char => {
+                initialRelationships[char.id] = { name: char.name, level: 0 };
+            });
+            localStorage.setItem("relationships", JSON.stringify(initialRelationships));
+        }
 
-    <script src="romance.js"></script>
+        // Load relationships from localStorage
+        const relationships = JSON.parse(localStorage.getItem("relationships"));
+
+        // Update relationships display
+        function updateRelationships() {
+            const charactersDiv = document.getElementById("characters");
+            charactersDiv.innerHTML = ""; // Clear existing content
+
+            Object.keys(relationships).forEach(charId => {
+                const char = relationships[charId];
+                const charDiv = document.createElement("div");
+                charDiv.className = "character";
+
+                charDiv.innerHTML = `
+                    <h2>${char.name}</h2>
+                    <p>Relationship Level: <span id="level-${charId}">${char.level}</span></p>
+                    <button class="button" onclick="increaseRelationship('${charId}')">Spend Time</button>
+                    <button class="button hidden" id="propose-${charId}" onclick="propose('${charId}')">Propose</button>
+                `;
+
+                // Show the "Propose" button if relationship level is >= 100
+                if (char.level >= 100) {
+                    charDiv.querySelector(`#propose-${charId}`).classList.remove("hidden");
+                }
+
+                charactersDiv.appendChild(charDiv);
+            });
+        }
+
+        // Increase relationship level
+        function increaseRelationship(charId) {
+            relationships[charId].level += 10; // Increase by 10 points
+            localStorage.setItem("relationships", JSON.stringify(relationships));
+            updateRelationships();
+        }
+
+        // Propose to a character
+        function propose(charId) {
+            alert(`You proposed to ${relationships[charId].name}!`);
+        }
+
+        // Initial load
+        updateRelationships();
+    </script>
 </body>
 </html>
