@@ -1,8 +1,33 @@
-function interactWithNPC(npcName) {
-    // Load relationships from localStorage
-    let relationships = JSON.parse(localStorage.getItem("relationships")) || {};
+// Initialize relationships if not already in localStorage
+function initializeRelationships() {
+    let relationships = JSON.parse(localStorage.getItem("relationships"));
 
+    if (!relationships) {
+        relationships = {
+            "npc1": {
+                "name": "Alex",
+                "affection": 50,
+                "status": "friend",
+                "events": []
+            },
+            "npc2": {
+                "name": "Jordan",
+                "affection": 30,
+                "status": "friend",
+                "events": []
+            }
+        };
+        localStorage.setItem("relationships", JSON.stringify(relationships));
+    }
+
+    updateUI();
+}
+
+// Function to interact with NPCs
+function interactWithNPC(npcName) {
+    let relationships = JSON.parse(localStorage.getItem("relationships"));
     let npc = relationships[npcName];
+
     if (!npc) {
         alert("NPC not found!");
         return;
@@ -28,12 +53,16 @@ function interactWithNPC(npcName) {
     document.getElementById("interaction-options").innerHTML = options;
 }
 
+// Increase affection points and update the status of NPC
 function giveCompliment(npcName) {
-    let relationships = JSON.parse(localStorage.getItem("relationships")) || {};
+    let relationships = JSON.parse(localStorage.getItem("relationships"));
     let npc = relationships[npcName];
 
     npc.affection += 10; // Increase affection points
-    if (npc.affection >= 50) npc.status = "romantic"; // Status change to romantic
+
+    if (npc.affection >= 50 && npc.status === "friend") {
+        npc.status = "romantic"; // Change status to romantic
+    }
 
     // Save updated relationship
     localStorage.setItem("relationships", JSON.stringify(relationships));
@@ -42,7 +71,7 @@ function giveCompliment(npcName) {
 }
 
 function askOut(npcName) {
-    let relationships = JSON.parse(localStorage.getItem("relationships")) || {};
+    let relationships = JSON.parse(localStorage.getItem("relationships"));
     let npc = relationships[npcName];
 
     if (npc.affection >= 50) {
@@ -58,7 +87,7 @@ function askOut(npcName) {
 }
 
 function goOnDate(npcName) {
-    let relationships = JSON.parse(localStorage.getItem("relationships")) || {};
+    let relationships = JSON.parse(localStorage.getItem("relationships"));
     let npc = relationships[npcName];
 
     npc.affection += 20; // Increase affection points
@@ -70,7 +99,7 @@ function goOnDate(npcName) {
 }
 
 function confessLove(npcName) {
-    let relationships = JSON.parse(localStorage.getItem("relationships")) || {};
+    let relationships = JSON.parse(localStorage.getItem("relationships"));
     let npc = relationships[npcName];
 
     if (npc.affection >= 80) {
@@ -85,11 +114,11 @@ function confessLove(npcName) {
     updateUI();
 }
 
+// Update the UI with the current relationship status
 function updateUI() {
-    // Update UI with the latest relationship status
-    let relationships = JSON.parse(localStorage.getItem("relationships")) || {};
-
+    let relationships = JSON.parse(localStorage.getItem("relationships"));
     let relationshipStatusHTML = "";
+
     for (let npcName in relationships) {
         let npc = relationships[npcName];
         relationshipStatusHTML += `
@@ -99,3 +128,8 @@ function updateUI() {
 
     document.getElementById("relationship-status").innerHTML = relationshipStatusHTML;
 }
+
+// Call initializeRelationships when the page loads
+window.onload = function() {
+    initializeRelationships();
+};
