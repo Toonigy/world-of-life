@@ -14,129 +14,96 @@
         .container {
             margin-top: 50px;
         }
-        .form-group {
-            margin-bottom: 15px;
+        h1 {
+            color: #4CAF50;
         }
-        input[type="text"], input[type="file"] {
-            width: 80%;
-            padding: 10px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+        .setup-container, .dashboard-container {
+            display: none;
         }
-        select {
-            width: 80%;
-            padding: 10px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            margin: 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .save-btn {
-            background-color: #4CAF50;
-            color: white;
-        }
-        .logout-btn {
-            background-color: #f44336;
-            color: white;
+        .setup-container.active, .dashboard-container.active {
+            display: block;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Welcome to Your Dashboard!</h1>
-        <p id="welcome-msg"></p>
-
-        <div id="profile-form">
-            <h2>Create Your Character</h2>
-            <form id="character-form">
-                <div class="form-group">
+        <!-- Character Setup Form -->
+        <div class="setup-container" id="setup-container">
+            <h1>Welcome to your Dashboard</h1>
+            <p>You haven't set up your character yet. Please fill in the details below:</p>
+            
+            <form id="setup-form">
+                <div>
                     <label for="character-name">Character Name:</label><br>
                     <input type="text" id="character-name" name="character-name" placeholder="Enter your character's name" required>
                 </div>
-
-                <div class="form-group">
-                    <label for="profile-pic">Upload Profile Picture:</label><br>
-                    <input type="file" id="profile-pic" name="profile-pic" accept="image/*" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="gender">Choose Gender:</label><br>
-                    <select id="gender" name="gender">
+                <div>
+                    <label for="gender">Gender:</label><br>
+                    <select id="gender" name="gender" required>
+                        <option value="">Select gender</option>
                         <option value="male">Male</option>
                         <option value="female">Female</option>
                         <option value="other">Other</option>
                     </select>
                 </div>
-
-                <button type="submit" class="save-btn">Save Character</button>
+                <div>
+                    <label for="profile-pic">Upload Profile Picture:</label><br>
+                    <input type="file" id="profile-pic" name="profile-pic" accept="image/*" required>
+                </div>
+                <button type="submit">Save Character</button>
             </form>
         </div>
 
-        <div id="logged-in-info" style="display: none;">
-            <h2>Welcome back!</h2>
-            <p id="user-info"></p>
-            <button class="logout-btn" onclick="logout()">Logout</button>
+        <!-- Dashboard Container (Regular Dashboard) -->
+        <div class="dashboard-container" id="dashboard-container">
+            <h1>Welcome to Your Dashboard!</h1>
+            <p>Enjoy the game and manage your life simulation!</p>
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jwt-decode/3.1.2/jwt-decode.min.js"></script>
     <script>
-        // Check if the user is logged in
-        const user = localStorage.getItem("user");
+        window.onload = function() {
+            const user = JSON.parse(localStorage.getItem("user"));
+            const character = JSON.parse(localStorage.getItem("character"));
 
-        if (user) {
-            const userInfo = JSON.parse(user);
-            // If the user is logged in, show the welcome message and profile info
-            document.getElementById("welcome-msg").innerText = `Welcome back, ${userInfo.name}!`;
-            document.getElementById("user-info").innerText = `Name: ${userInfo.name}, Email: ${userInfo.email}`;
-            document.getElementById("profile-form").style.display = 'none';
-            document.getElementById("logged-in-info").style.display = 'block';
-        } else {
-            document.getElementById("profile-form").style.display = 'block';
-        }
+            if (!user) {
+                // If the user isn't logged in, redirect to login page
+                window.location.href = "index.html";
+                return;
+            }
 
-        // Handle form submission for new users
-        document.getElementById("character-form").addEventListener("submit", function(event) {
-            event.preventDefault();
+            if (!character) {
+                // If character hasn't been set up yet, show the setup form
+                document.getElementById("setup-container").classList.add("active");
+            } else {
+                // If character is set up, show the regular dashboard
+                document.getElementById("dashboard-container").classList.add("active");
+            }
 
-            // Get the user inputs
-            const characterName = document.getElementById("character-name").value;
-            const gender = document.getElementById("gender").value;
-            const profilePic = document.getElementById("profile-pic").files[0];
+            // Handle character setup form submission
+            document.getElementById("setup-form").addEventListener("submit", function(event) {
+                event.preventDefault();
 
-            // Handle the file upload (this example assumes you save it locally or to a server)
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const profilePicData = e.target.result;
-                const newCharacterData = {
-                    characterName: characterName,
-                    gender: gender,
-                    profilePic: profilePicData,
-                };
+                const characterName = document.getElementById("character-name").value;
+                const gender = document.getElementById("gender").value;
+                const profilePic = document.getElementById("profile-pic").files[0];
 
-                // Store character data (you could save this in localStorage or a backend)
-                localStorage.setItem("characterData", JSON.stringify(newCharacterData));
+                if (characterName && gender && profilePic) {
+                    // Save character info to localStorage
+                    const characterData = {
+                        name: characterName,
+                        gender: gender,
+                        profilePic: URL.createObjectURL(profilePic)
+                    };
+                    localStorage.setItem("character", JSON.stringify(characterData));
 
-                // Redirect to the dashboard or game area after saving
-                alert("Character saved successfully!");
-                window.location.href = "https://toonigy.github.io/world-of-life/game.html"; // Redirect to game page
-            };
-
-            reader.readAsDataURL(profilePic); // Convert profile picture to base64
-        });
-
-        // Logout function
-        function logout() {
-            localStorage.removeItem("user");
-            window.location.href = "https://toonigy.github.io/world-of-life/index.html";
+                    // After setup, show the regular dashboard
+                    document.getElementById("setup-container").classList.remove("active");
+                    document.getElementById("dashboard-container").classList.add("active");
+                } else {
+                    alert("Please fill in all the details.");
+                }
+            });
         }
     </script>
 </body>
