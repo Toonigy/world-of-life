@@ -34,12 +34,33 @@
 
     <div>
         <h3>Romance System:</h3>
-        <!-- Romance Button -->
         <button class="dashboard-button" onclick="location.href='https://toonigy.github.io/world-of-life/romance.html'">Start Your Romance Journey</button>
     </div>
 
+    <div>
+        <h3>Career System:</h3>
+        <button class="dashboard-button" onclick="location.href='https://toonigy.github.io/world-of-life/career_progress.html'">Check Career Progress</button>
+    </div>
+
+    <div>
+        <h3>House Shop:</h3>
+        <button class="dashboard-button" onclick="location.href='https://toonigy.github.io/world-of-life/house_shop.html'">Visit the House Shop</button>
+    </div>
+
+    <div>
+        <h3>Your House:</h3>
+        <p id="house-info">You don't own a house yet.</p>
+    </div>
+
     <script>
-        // Add any script here for further dashboard-related actions if needed
+        // Display current house if the player owns one
+        window.onload = function() {
+            const house = localStorage.getItem("house");
+
+            if (house) {
+                document.getElementById("house-info").innerText = `You own a ${house}.`;
+            }
+        };
     </script>
 </body>
 </html>
