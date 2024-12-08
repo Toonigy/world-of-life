@@ -53,17 +53,29 @@
     </div>
 
     <script>
-        // Check login status and load user data
-        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-        if (!currentUser || !currentUser.id) {
-            alert("You are not logged in. Redirecting to login page.");
-            window.location.href = "login.html";
-        } else {
+        // Ensure the user is logged in
+        function checkLogin() {
+            const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+            if (!currentUser || !currentUser.id) {
+                // Redirect to login if not logged in
+                window.location.href = "login.html";
+                return null;
+            }
+
+            return currentUser;
+        }
+
+        // Load dashboard details
+        function loadDashboard() {
+            const currentUser = checkLogin();
+            if (!currentUser) return; // If not logged in, stop execution
+
             // Display user ID and money
             document.getElementById("user-id").innerText = currentUser.id;
             document.getElementById("user-money").innerText = `$${currentUser.money || 0}`;
 
-            // Check for marriage status
+            // Check marriage status
             const relationships = JSON.parse(localStorage.getItem("relationships")) || {};
             const marriedTo = Object.values(relationships).filter(rel => rel.married);
             const marriageStatus = marriedTo.length
@@ -79,6 +91,9 @@
             alert("You have been logged out.");
             window.location.href = "index.html";
         }
+
+        // Initialize the dashboard
+        loadDashboard();
     </script>
 </body>
 </html>
