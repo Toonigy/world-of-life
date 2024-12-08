@@ -39,18 +39,19 @@
     <script>
         function searchUser() {
             const userID = document.getElementById("user-id-input").value.trim();
-            if (userID) {
-                // For simplicity, we assume we only have the user's ID stored in localStorage.
-                // Later, this could be extended to search a database of users.
-                const storedUserID = localStorage.getItem("userID");
 
-                if (userID === storedUserID) {
-                    document.getElementById("user-info").innerHTML = `<p>You're looking for yourself!</p>`;
-                } else {
-                    document.getElementById("user-info").innerHTML = `<p>User with ID ${userID} not found.</p>`;
-                }
+            // Retrieve users from localStorage
+            const users = JSON.parse(localStorage.getItem("users"));
+
+            if (users && users[userID]) {
+                const userInfo = users[userID];
+                document.getElementById("user-info").innerHTML = `
+                    <p>User found:</p>
+                    <p>Name: ${userInfo.name}</p>
+                    <p>Money: $${userInfo.money}</p>
+                `;
             } else {
-                alert("Please enter a valid user ID.");
+                document.getElementById("user-info").innerHTML = `<p>User with ID ${userID} not found.</p>`;
             }
         }
     </script>
