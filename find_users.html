@@ -3,95 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Find Other Users</title>
+    <title>Find Users</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
         }
-        .user-card {
-            display: inline-block;
-            margin: 20px;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            width: 200px;
-            text-align: center;
-        }
-        .search-input {
-            margin-top: 20px;
-            padding: 10px;
-            width: 200px;
-            font-size: 16px;
-        }
-        .user-card button {
-            margin-top: 10px;
-            padding: 10px;
+        .search-button {
+            padding: 10px 20px;
             background-color: #4CAF50;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
         }
-        .user-card button:hover {
+        .search-button:hover {
             background-color: #45a049;
+        }
+        .user-info {
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
-    <h1>Find Other Players</h1>
-    <p>Search for players or browse the list of registered users.</p>
-
-    <input type="text" id="search" class="search-input" placeholder="Search by name" oninput="filterUsers()">
+    <h1>Search for a User</h1>
+    <p>Enter a user ID to find another player:</p>
     
-    <div id="user-list">
-        <!-- Users will be listed here -->
+    <input type="text" id="user-id-input" placeholder="Enter User ID">
+    <button class="search-button" onclick="searchUser()">Search</button>
+
+    <div class="user-info" id="user-info">
+        <!-- User info will appear here -->
     </div>
 
     <script>
-        // Sample users list (in a real game, this would be fetched from a database)
-        const users = [
-            { name: "JohnDoe", gender: "Male", house: "Modern Apartment" },
-            { name: "JaneSmith", gender: "Female", house: "Luxury Mansion" },
-            { name: "AlexKing", gender: "Male", house: "Tiny Cottage" },
-            { name: "SarahLee", gender: "Female", house: "Modern Apartment" }
-        ];
+        function searchUser() {
+            const userID = document.getElementById("user-id-input").value.trim();
+            if (userID) {
+                // For simplicity, we assume we only have the user's ID stored in localStorage.
+                // Later, this could be extended to search a database of users.
+                const storedUserID = localStorage.getItem("userID");
 
-        // Function to display all users
-        function displayUsers(usersToDisplay) {
-            const userListContainer = document.getElementById("user-list");
-            userListContainer.innerHTML = ""; // Clear previous users list
-
-            usersToDisplay.forEach(user => {
-                const userCard = document.createElement("div");
-                userCard.classList.add("user-card");
-
-                userCard.innerHTML = `
-                    <h3>${user.name}</h3>
-                    <p>Gender: ${user.gender}</p>
-                    <p>House: ${user.house}</p>
-                    <button onclick="viewProfile('${user.name}')">View Profile</button>
-                `;
-                userListContainer.appendChild(userCard);
-            });
+                if (userID === storedUserID) {
+                    document.getElementById("user-info").innerHTML = `<p>You're looking for yourself!</p>`;
+                } else {
+                    document.getElementById("user-info").innerHTML = `<p>User with ID ${userID} not found.</p>`;
+                }
+            } else {
+                alert("Please enter a valid user ID.");
+            }
         }
-
-        // Function to filter users based on the search input
-        function filterUsers() {
-            const searchQuery = document.getElementById("search").value.toLowerCase();
-            const filteredUsers = users.filter(user => user.name.toLowerCase().includes(searchQuery));
-            displayUsers(filteredUsers);
-        }
-
-        // Function to view a user profile (simple alert for now)
-        function viewProfile(userName) {
-            alert(`Viewing profile of ${userName}`);
-        }
-
-        // Display all users when the page loads
-        window.onload = function() {
-            displayUsers(users);
-        };
     </script>
 </body>
 </html>
