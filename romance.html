@@ -9,11 +9,8 @@
             font-family: Arial, sans-serif;
             padding: 20px;
         }
-        .character {
+        .section {
             margin-bottom: 20px;
-            border: 1px solid #ddd;
-            padding: 10px;
-            border-radius: 5px;
         }
         .button {
             display: inline-block;
@@ -24,108 +21,106 @@
             text-decoration: none;
             border-radius: 5px;
             cursor: pointer;
+            text-align: center;
         }
         .button:hover {
             background-color: #45a049;
         }
-        .hidden {
-            display: none;
-        }
     </style>
 </head>
 <body>
-    <h1>Romance</h1>
-    <p>Build relationships with characters, propose, and get married!</p>
+    <h1>Romance Options</h1>
+    <div id="romance-section">
+        <div class="section" id="jordan">
+            <h2>Jordan</h2>
+            <p id="jordan-gender">Gender: Not Set</p>
+            <button class="button" id="jordan-spend-time" onclick="spendTime('jordan')">Spend Time with Jordan</button>
+            <button class="button" id="jordan-propose" style="display: none;" onclick="propose('jordan')">Propose to Jordan</button>
+        </div>
 
-    <div id="characters"></div>
+        <div class="section" id="alex">
+            <h2>Alex</h2>
+            <p id="alex-gender">Gender: Not Set</p>
+            <button class="button" id="alex-spend-time" onclick="spendTime('alex')">Spend Time with Alex</button>
+            <button class="button" id="alex-propose" style="display: none;" onclick="propose('alex')">Propose to Alex</button>
+        </div>
+    </div>
 
     <script>
-        // Example character data
-        const characters = [
-            { id: "alex", name: "Alex", relationshipLevel: 0 },
-            { id: "jordan", name: "Jordan", relationshipLevel: 0 }
-        ];
+        // Check the user's romance status and gender
+        const relationships = JSON.parse(localStorage.getItem("relationships")) || {};
 
-        // Initialize relationship and marriage data in localStorage
-        if (!localStorage.getItem("relationships")) {
-            const initialRelationships = {};
-            characters.forEach(char => {
-                initialRelationships[char.id] = { name: char.name, level: 0, married: false };
-            });
-            localStorage.setItem("relationships", JSON.stringify(initialRelationships));
+        // Define genders for Alex and Jordan (you can set these based on your needs)
+        const jordanGender = "Male";  // You can replace this with dynamic logic if needed
+        const alexGender = "Female";  // Same as above
+
+        // Function to update gender and romance buttons
+        function updateRomancePage() {
+            // Get current user data
+            const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+            // Display gender information for Jordan and Alex
+            document.getElementById("jordan-gender").innerText = `Gender: ${jordanGender}`;
+            document.getElementById("alex-gender").innerText = `Gender: ${alexGender}`;
+
+            // Check current relationship levels and show the propose button if conditions are met
+            if (relationships.jordan && relationships.jordan.level >= 5) {
+                document.getElementById("jordan-propose").style.display = "inline-block";
+            }
+            if (relationships.alex && relationships.alex.level >= 5) {
+                document.getElementById("alex-propose").style.display = "inline-block";
+            }
         }
 
-        // Load relationships from localStorage
-        const relationships = JSON.parse(localStorage.getItem("relationships"));
-
-        // Update relationships display
-        function updateRelationships() {
-            const charactersDiv = document.getElementById("characters");
-            charactersDiv.innerHTML = ""; // Clear existing content
-
-            Object.keys(relationships).forEach(charId => {
-                const char = relationships[charId];
-                const charDiv = document.createElement("div");
-                charDiv.className = "character";
-
-                // Dynamic content based on marriage status
-                if (char.married) {
-                    charDiv.innerHTML = `
-                        <h2>${char.name}</h2>
-                        <p>Relationship Level: ${char.level}</p>
-                        <p>Status: Married</p>
-                    `;
-                } else {
-                    charDiv.innerHTML = `
-                        <h2>${char.name}</h2>
-                        <p>Relationship Level: <span id="level-${charId}">${char.level}</span></p>
-                        <button class="button" onclick="increaseRelationship('${charId}')">Spend Time</button>
-                        <button class="button hidden" id="propose-${charId}" onclick="propose('${charId}')">Propose</button>
-                    `;
-
-                    // Show the "Propose" button if relationship level is >= 100
-                    if (char.level >= 100) {
-                        charDiv.querySelector(`#propose-${charId}`).classList.remove("hidden");
-                    }
-                }
-
-                charactersDiv.appendChild(charDiv);
-            });
-        }
-
-        // Increase relationship level
-        function increaseRelationship(charId) {
-            let currentLevel = parseInt(relationships[charId].level) || 0; // Parse as number or default to 0
-            relationships[charId].level = currentLevel + 10; // Increase by 10 points
-
-            // Save updated relationships back to localStorage
-            localStorage.setItem("relationships", JSON.stringify(relationships));
-
-            // Update the UI
-            updateRelationships();
-        }
-
-        // Propose to a character
-        function propose(charId) {
-            if (relationships[charId].level >= 100) {
-                const confirmMarriage = confirm(`Do you want to marry ${relationships[charId].name}?`);
-                if (confirmMarriage) {
-                    relationships[charId].married = true;
-                    alert(`You are now married to ${relationships[charId].name}!`);
-                }
-            } else {
-                alert("Your relationship level is not high enough to propose.");
+        // Function to handle spending time with someone
+        function spendTime(person) {
+            const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+            if (!currentUser) {
+                alert("You need to log in first!");
+                window.location.href = "login.html";
+                return;
             }
 
-            // Save updated relationships back to localStorage
+            // Increase relationship level
+            if (!relationships[person]) {
+                relationships[person] = { name: person, level: 1 };
+            } else {
+                relationships[person].level += 1;
+            }
+
+            // Save updated relationships to localStorage
             localStorage.setItem("relationships", JSON.stringify(relationships));
 
-            // Update the UI
-            updateRelationships();
+            // Update the romance page with new levels
+            updateRomancePage();
+
+            alert(`You spent time with ${person}! Relationship level is now ${relationships[person].level}`);
         }
 
-        // Initial load
-        updateRelationships();
+        // Function to handle proposing to someone
+        function propose(person) {
+            const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+            if (!currentUser) {
+                alert("You need to log in first!");
+                window.location.href = "login.html";
+                return;
+            }
+
+            // Check if the relationship level is high enough for a proposal
+            if (relationships[person] && relationships[person].level >= 5) {
+                relationships[person].married = true;
+                localStorage.setItem("relationships", JSON.stringify(relationships));
+
+                // Update marriage status on the dashboard
+                alert(`Congratulations! You are now married to ${person}!`);
+                window.location.href = "dashboard.html";
+            } else {
+                alert(`You need a higher relationship level to propose to ${person}.`);
+            }
+        }
+
+        // Initialize the romance page
+        updateRomancePage();
     </script>
 </body>
 </html>
