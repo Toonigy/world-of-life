@@ -46,55 +46,81 @@
         </div>
     </div>
 
+    <audio id="baby-lullaby" src="baby.ogg" preload="auto"></audio>
+
     <script>
-        // Check the user's romance status and gender
+        // Check the user's romance status, gender, and pregnancy status
         const relationships = JSON.parse(localStorage.getItem("relationships")) || {};
 
-        // Define genders for Alex and Jordan (you can set these based on your needs)
-        const jordanGender = "Male";  // You can replace this with dynamic logic if needed
-        const alexGender = "Female";  // Same as above
+        const jordanGender = "Male";  // Static for now, can be dynamic
+        const alexGender = "Female";  // Static for now, can be dynamic
 
-        // Function to update gender and romance buttons
+        // Function to update the romance page
         function updateRomancePage() {
-            // Get current user data
             const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+            const userGender = localStorage.getItem("userGender");
 
             // Display gender information for Jordan and Alex
             document.getElementById("jordan-gender").innerText = `Gender: ${jordanGender}`;
             document.getElementById("alex-gender").innerText = `Gender: ${alexGender}`;
 
-            // Check current relationship levels and show the propose button if conditions are met
-            if (relationships.jordan && relationships.jordan.level >= 5) {
-                document.getElementById("jordan-propose").style.display = "inline-block";
+            // Check if the player is female and their partner is male for pregnancy conditions
+            if (userGender === "Female") {
+                // Check if the player is in a relationship with a male partner
+                if (relationships.jordan && relationships.jordan.level >= 5 && !relationships.jordan.pregnant) {
+                    document.getElementById("jordan-spend-time").disabled = false;
+                    document.getElementById("jordan-propose").style.display = "inline-block";
+                }
+                if (relationships.alex && relationships.alex.level >= 5 && !relationships.alex.pregnant) {
+                    document.getElementById("alex-spend-time").disabled = false;
+                    document.getElementById("alex-propose").style.display = "inline-block";
+                }
             }
-            if (relationships.alex && relationships.alex.level >= 5) {
-                document.getElementById("alex-propose").style.display = "inline-block";
-            }
+
+            // Check pregnancy status and update the page
+            const pregnancyStatus = relationships.jordan && relationships.jordan.pregnant
+                ? "Pregnant with Jordan's child"
+                : relationships.alex && relationships.alex.pregnant
+                ? "Pregnant with Alex's child"
+                : "Not pregnant";
+
+            document.getElementById("pregnancy-status").innerText = pregnancyStatus;
         }
 
-        // Function to handle spending time with someone
+        // Function to handle spending time with someone and checking pregnancy conditions
         function spendTime(person) {
             const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+            const userGender = localStorage.getItem("userGender");
+            
             if (!currentUser) {
                 alert("You need to log in first!");
                 window.location.href = "login.html";
                 return;
             }
 
-            // Increase relationship level
-            if (!relationships[person]) {
-                relationships[person] = { name: person, level: 1 };
-            } else {
+            // Ensure the player is female and partner is male
+            if (userGender === "Female" && relationships[person] && relationships[person].gender === "Male") {
                 relationships[person].level += 1;
+
+                // Check if pregnancy conditions are met
+                if (relationships[person].level >= 5 && !relationships[person].pregnant) {
+                    // Mark pregnancy status
+                    relationships[person].pregnant = true;
+
+                    // Play pregnancy lullaby (baby.ogg)
+                    document.getElementById("baby-lullaby").play();
+
+                    // Notify the player
+                    alert(`Congratulations! You are now pregnant with ${person}'s child.`);
+
+                    // Update the relationships in localStorage
+                    localStorage.setItem("relationships", JSON.stringify(relationships));
+                }
             }
 
-            // Save updated relationships to localStorage
+            // Save updated relationships
             localStorage.setItem("relationships", JSON.stringify(relationships));
-
-            // Update the romance page with new levels
             updateRomancePage();
-
-            alert(`You spent time with ${person}! Relationship level is now ${relationships[person].level}`);
         }
 
         // Function to handle proposing to someone
@@ -111,7 +137,6 @@
                 relationships[person].married = true;
                 localStorage.setItem("relationships", JSON.stringify(relationships));
 
-                // Update marriage status on the dashboard
                 alert(`Congratulations! You are now married to ${person}!`);
                 window.location.href = "dashboard.html";
             } else {
