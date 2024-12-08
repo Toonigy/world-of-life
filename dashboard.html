@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Dashboard</title>
+    <title>Dashboard</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            text-align: center;
+            padding: 20px;
         }
         .button {
-            margin-top: 20px;
+            display: inline-block;
+            margin: 10px;
             padding: 10px 20px;
             background-color: #4CAF50;
             color: white;
-            border: none;
+            text-decoration: none;
             border-radius: 5px;
             cursor: pointer;
         }
@@ -24,51 +25,47 @@
     </style>
 </head>
 <body>
+    <h1>Welcome to Your Dashboard</h1>
+    <p>Your Player ID: <span id="user-id"></span></p>
 
-    <div id="dashboard-section">
-        <h1>Welcome to Your Dashboard!</h1>
-        <p>You are logged in as: <span id="user-name"></span></p>
-        <p>Your money: <span id="user-money"></span></p>
-        
-        <!-- Buttons for navigation -->
-        <button class="button" onclick="window.location.href='https://toonigy.github.io/world-of-life/romance.html'">Romance</button>
-        <button class="button" onclick="window.location.href='https://toonigy.github.io/world-of-life/career.html'">Career</button>
-        <button class="button" onclick="window.location.href='https://toonigy.github.io/world-of-life/houses.html'">House Shop</button>
-        
-        <!-- Logout button -->
-        <button class="button" onclick="logout()">Log Out</button>
-    </div>
+    <!-- Money Display -->
+    <p id="money-display">Money: $0</p>
+
+    <!-- Buttons -->
+    <a class="button" href="career.html">Career Progress</a>
+    <a class="button" href="house-shop.html">House Shop</a>
+    <a class="button" href="romance.html">Romance</a>
+    <a class="button" href="find-users.html">Find Other Users</a>
+    <button class="button" id="logout-button">Log Out</button>
 
     <script>
-        // On page load, check if the user is logged in
-        window.onload = function() {
+        // Check if the user is logged in
+        window.onload = function () {
             const userID = localStorage.getItem("userID");
-
-            // If not logged in, redirect to the login page
-            if (!userID) {
-                window.location.href = 'https://toonigy.github.io/world-of-life/login.html';
-                return;
-            }
-
-            // Retrieve user data from localStorage
             const userName = localStorage.getItem("userName");
-            const userMoney = localStorage.getItem(userID + "_money");
+            const money = parseInt(localStorage.getItem("money")) || 0;
 
-            // Display the user info
-            document.getElementById("user-name").textContent = userName || "Not set";
-            document.getElementById("user-money").textContent = userMoney || "0";
-        }
+            // Update user ID display
+            document.getElementById("user-id").textContent = userID || "Not logged in";
 
-        // Logout function to remove user data and redirect to login page
-        function logout() {
-            // Remove user data from localStorage
+            // Update money display
+            document.getElementById("money-display").textContent = `Money: $${money}`;
+
+            // Redirect to login if not logged in
+            if (!userID) {
+                alert("You are not logged in. Redirecting to login page.");
+                window.location.href = "login.html";
+            }
+        };
+
+        // Log out functionality
+        document.getElementById('logout-button').addEventListener('click', function () {
             localStorage.removeItem("userID");
             localStorage.removeItem("userName");
-
-            // Redirect to the login page
-            window.location.href = 'https://toonigy.github.io/world-of-life/login.html';
-        }
+            localStorage.removeItem("money");
+            alert("You have been logged out.");
+            window.location.href = "login.html";
+        });
     </script>
-
 </body>
 </html>
