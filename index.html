@@ -3,91 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
+    <title>Life Sim Game</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
+            margin: 0;
+            padding: 0;
         }
-        .button {
-            margin-top: 20px;
+        .container {
+            margin-top: 50px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        input[type="text"], input[type="password"] {
+            width: 80%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
             padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
+            font-size: 16px;
+            margin: 10px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
         }
-        .button:hover {
-            background-color: #45a049;
+        .signup-btn {
+            background-color: #4CAF50;
+            color: white;
         }
-        .login-form {
-            display: none;
+        .google-btn {
+            background-color: #4285F4;
+            color: white;
         }
-        .dashboard-welcome {
-            display: none;
+        .login-btn {
+            background-color: #555;
+            color: white;
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <h1>Welcome to Life Sim!</h1>
+        <p>Login to get started:</p>
 
-    <div id="login-section" class="login-form">
-        <h1>Login or Sign Up</h1>
-        <button class="button" id="google-login-button">Login with Google</button>
+        <!-- Login Form for Non-Google Users -->
+        <form id="login-form">
+            <div class="form-group">
+                <label for="username">Username:</label><br>
+                <input type="text" id="username" name="username" placeholder="Enter your username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label><br>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+            <button type="submit" class="login-btn">Login</button>
+        </form>
+
+        <!-- Sign Up and Google Login Buttons -->
         <div>
-            <p>Don't have an account? <a href="https://toonigy.github.io/world-of-life/signup.html">Sign Up</a></p>
+            <button class="signup-btn" onclick="location.href='https://toonigy.github.io/world-of-life/signup.html';">Sign Up</button>
+            
+            <!-- Google Sign-In -->
+            <div id="g_id_onload"
+                 data-client_id="461434289159-ga3odshnftie2n8g15tl28lgrgtoriib.apps.googleusercontent.com"
+                 data-ux_mode="redirect"
+                 data-login_uri="https://toonigy.github.io/world-of-life/dashboard.html">
+            </div>
+            <div class="g_id_signin google-btn"
+                 data-type="standard"
+                 data-size="large"
+                 data-theme="outline"
+                 data-text="sign_in_with"
+                 data-shape="rectangular"
+                 data-logo_alignment="left">
+            </div>
         </div>
     </div>
 
-    <div id="dashboard-section" class="dashboard-welcome">
-        <h1>Welcome to Your Dashboard!</h1>
-        <p>You are already logged in.</p>
-        <button class="button" onclick="window.location.href='https://toonigy.github.io/world-of-life/dashboard.html'">Go to Dashboard</button>
-    </div>
-
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
-    <script>
-        // Function to check if the user is logged in and redirect
-        window.onload = function() {
-            const userID = localStorage.getItem("userID");
-
-            // If user is logged in, redirect to dashboard
-            if (userID) {
-                // Hide the login section and show dashboard section
-                document.getElementById("login-section").style.display = "none";
-                document.getElementById("dashboard-section").style.display = "block";
-                window.location.href = "https://toonigy.github.io/world-of-life/dashboard.html";  // Redirect to dashboard
-            } else {
-                // If not logged in, show login section
-                document.getElementById("login-section").style.display = "block";
-                document.getElementById("dashboard-section").style.display = "none";
-            }
-        }
-
-        // Google Login function
-        function onSignIn(googleUser) {
-            const profile = googleUser.getBasicProfile();
-            const userID = profile.getId();
-            const userName = profile.getName();
-
-            // Save user ID and Name to localStorage
-            localStorage.setItem("userID", userID);
-            localStorage.setItem("userName", userName);
-
-            // Redirect to dashboard after successful login
-            window.location.href = "https://toonigy.github.io/world-of-life/dashboard.html";
-        }
-
-        // Initialize Google Sign-In
-        document.getElementById("google-login-button").onclick = function() {
-            gapi.load('auth2', function() {
-                gapi.auth2.init().then(function() {
-                    const auth2 = gapi.auth2.getAuthInstance();
-                    auth2.signIn().then(onSignIn);
-                });
-            });
-        };
-    </script>
-
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </body>
 </html>
