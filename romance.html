@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life Sim - Romance System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .npc-list {
+            margin-top: 20px;
+        }
+        .npc-button {
+            margin: 5px;
+            padding: 10px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        .npc-button:hover {
+            background-color: #45a049;
+        }
+        #interaction-options button {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Romance System</h1>
+
+    <h2>Interact with NPCs:</h2>
+    <div class="npc-list">
+        <button class="npc-button" onclick="interactWithNPC('npc1')">Interact with Alex</button>
+        <button class="npc-button" onclick="interactWithNPC('npc2')">Interact with Jordan</button>
+    </div>
+
+    <div id="interaction-options">
+        <!-- Interaction options will appear here based on NPC status -->
+    </div>
+
+    <h2>Your Relationships:</h2>
+    <div id="relationship-status">
+        <!-- Relationship status will be updated here -->
+    </div>
+
+    <script src="romance.js"></script>
+</body>
+</html>
