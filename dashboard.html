@@ -23,9 +23,6 @@
         .button:hover {
             background-color: #45a049;
         }
-        .hidden {
-            display: none;
-        }
     </style>
 </head>
 <body>
@@ -34,11 +31,11 @@
     <p><strong>Gender:</strong> <span id="user-gender">Loading...</span></p>
     <p><strong>Money:</strong> $<span id="user-money">0</span></p>
     <p><strong>Marriage Status:</strong> <span id="marriage-status">Single</span></p>
+    <p><strong>Pregnancy Status:</strong> <span id="pregnancy-status">Not pregnant</span></p>
 
     <button class="button" onclick="location.href='career_progress.html'">Career Progress</button>
     <button class="button" onclick="location.href='house_shop.html'">House Shop</button>
     <button class="button" onclick="location.href='find_users.html'">Find Other Users</button>
-
     <button class="button hidden" id="interact-spouse" onclick="showSpouseOptions()">Interact with Spouse</button>
 
     <div id="spouse-options" class="hidden">
@@ -53,12 +50,14 @@
         const userGender = localStorage.getItem("userGender");
         const userMoney = parseInt(localStorage.getItem("money") || "0", 10);
         const relationships = JSON.parse(localStorage.getItem("relationships")) || {};
+        const pregnancyStatus = localStorage.getItem("pregnancyStatus") || "Not pregnant";
 
         function updateDashboard() {
             // Set user data
             document.getElementById("user-id").innerText = userId || "Not logged in yet";
             document.getElementById("user-gender").innerText = userGender || "Not set";
             document.getElementById("user-money").innerText = userMoney;
+            document.getElementById("pregnancy-status").innerText = pregnancyStatus;
 
             // Check marriage status
             let marriageStatus = "Single";
@@ -96,9 +95,19 @@
             if (playerGender === "Female" && spouseGender === "Male") {
                 // Play pregnancy sound
                 const audio = new Audio("baby.mp3");
-                audio.play();
 
-                alert("You are now pregnant!");
+                audio.play()
+                    .then(() => {
+                        localStorage.setItem("pregnancyStatus", "Pregnant");
+                        document.getElementById("pregnancy-status").innerText = "Pregnant";
+                        alert("You are now pregnant!");
+                    })
+                    .catch((error) => {
+                        console.error("Error playing audio:", error);
+                        localStorage.setItem("pregnancyStatus", "Pregnant");
+                        document.getElementById("pregnancy-status").innerText = "Pregnant";
+                        alert("You are now pregnant! (Sound failed to play)");
+                    });
             } else {
                 alert(`You had a romantic moment with ${spouseName}!`);
             }
@@ -109,6 +118,7 @@
             localStorage.removeItem("userGender");
             localStorage.removeItem("money");
             localStorage.removeItem("relationships");
+            localStorage.removeItem("pregnancyStatus");
             location.href = "login.html";
         }
 
