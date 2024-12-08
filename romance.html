@@ -11,6 +11,9 @@
         }
         .character {
             margin-bottom: 20px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
         }
         .button {
             display: inline-block;
@@ -37,71 +40,71 @@
     <div id="characters"></div>
 
     <script>
-<script>
-    // Example character data
-    const characters = [
-        { id: "alex", name: "Alex", relationshipLevel: 0 },
-        { id: "jordan", name: "Jordan", relationshipLevel: 0 }
-    ];
+        // Example character data
+        const characters = [
+            { id: "alex", name: "Alex", relationshipLevel: 0 },
+            { id: "jordan", name: "Jordan", relationshipLevel: 0 }
+        ];
 
-    // Initialize character data in localStorage if not already set
-    if (!localStorage.getItem("relationships")) {
-        const initialRelationships = {};
-        characters.forEach(char => {
-            initialRelationships[char.id] = { name: char.name, level: 0 }; // Initialize with numeric level
-        });
-        localStorage.setItem("relationships", JSON.stringify(initialRelationships));
-    }
+        // Initialize character data in localStorage if not already set
+        if (!localStorage.getItem("relationships")) {
+            const initialRelationships = {};
+            characters.forEach(char => {
+                initialRelationships[char.id] = { name: char.name, level: 0 };
+            });
+            localStorage.setItem("relationships", JSON.stringify(initialRelationships));
+        }
 
-    // Load relationships from localStorage
-    const relationships = JSON.parse(localStorage.getItem("relationships"));
+        // Load relationships from localStorage
+        const relationships = JSON.parse(localStorage.getItem("relationships"));
 
-    // Update relationships display
-    function updateRelationships() {
-        const charactersDiv = document.getElementById("characters");
-        charactersDiv.innerHTML = ""; // Clear existing content
+        // Update relationships display
+        function updateRelationships() {
+            const charactersDiv = document.getElementById("characters");
+            charactersDiv.innerHTML = ""; // Clear existing content
 
-        Object.keys(relationships).forEach(charId => {
-            const char = relationships[charId];
-            const charDiv = document.createElement("div");
-            charDiv.className = "character";
+            Object.keys(relationships).forEach(charId => {
+                const char = relationships[charId];
+                const charDiv = document.createElement("div");
+                charDiv.className = "character";
 
-            charDiv.innerHTML = `
-                <h2>${char.name}</h2>
-                <p>Relationship Level: <span id="level-${charId}">${char.level}</span></p>
-                <button class="button" onclick="increaseRelationship('${charId}')">Spend Time</button>
-                <button class="button hidden" id="propose-${charId}" onclick="propose('${charId}')">Propose</button>
-            `;
+                charDiv.innerHTML = `
+                    <h2>${char.name}</h2>
+                    <p>Relationship Level: <span id="level-${charId}">${char.level}</span></p>
+                    <button class="button" onclick="increaseRelationship('${charId}')">Spend Time</button>
+                    <button class="button hidden" id="propose-${charId}" onclick="propose('${charId}')">Propose</button>
+                `;
 
-            // Show the "Propose" button if relationship level is >= 100
-            if (char.level >= 100) {
-                charDiv.querySelector(`#propose-${charId}`).classList.remove("hidden");
-            }
+                // Show the "Propose" button if relationship level is >= 100
+                if (char.level >= 100) {
+                    charDiv.querySelector(`#propose-${charId}`).classList.remove("hidden");
+                }
 
-            charactersDiv.appendChild(charDiv);
-        });
-    }
+                charactersDiv.appendChild(charDiv);
+            });
+        }
 
-    // Increase relationship level
-    function increaseRelationship(charId) {
-        // Ensure the relationship level is a number
-        let currentLevel = parseInt(relationships[charId].level) || 0; // Parse as number or default to 0
-        relationships[charId].level = currentLevel + 10; // Increase by 10 points
+        // Increase relationship level
+        function increaseRelationship(charId) {
+            // Ensure the relationship level is a number
+            let currentLevel = parseInt(relationships[charId].level) || 0; // Parse as number or default to 0
+            relationships[charId].level = currentLevel + 10; // Increase by 10 points
 
-        // Save updated relationships back to localStorage
-        localStorage.setItem("relationships", JSON.stringify(relationships));
+            // Save updated relationships back to localStorage
+            localStorage.setItem("relationships", JSON.stringify(relationships));
 
-        // Update the UI
+            // Update the UI
+            updateRelationships();
+        }
+
+        // Propose to a character
+        function propose(charId) {
+            alert(`You proposed to ${relationships[charId].name}!`);
+            // You can add additional logic here for marriage, etc.
+        }
+
+        // Initial load
         updateRelationships();
-    }
-
-    // Propose to a character
-    function propose(charId) {
-        alert(`You proposed to ${relationships[charId].name}!`);
-    }
-
-    // Initial load
-    updateRelationships();
-</script>
+    </script>
 </body>
 </html>
