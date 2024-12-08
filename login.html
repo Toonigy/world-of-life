@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+        .login-form {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="login-section">
+        <h1>Login or Sign Up</h1>
+        <p>Welcome to the World of Life! Please log in to continue.</p>
+        <button class="button" id="google-login-button">Login with Google</button>
+        <p>Don't have an account? <a href="https://toonigy.github.io/world-of-life/signup.html">Sign Up</a></p>
+    </div>
+
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script>
+        // Check if the user is already logged in
+        window.onload = function() {
+            const userID = localStorage.getItem("userID");
+
+            // If user is already logged in, redirect to the dashboard
+            if (userID) {
+                window.location.href = "https://toonigy.github.io/world-of-life/dashboard.html";
+            }
+        }
+
+        // Google login function
+        function onSignIn(googleUser) {
+            const profile = googleUser.getBasicProfile();
+            const userID = profile.getId();
+            const userName = profile.getName();
+
+            // Save the user info to localStorage
+            localStorage.setItem("userID", userID);
+            localStorage.setItem("userName", userName);
+
+            // Redirect to the dashboard after successful login
+            window.location.href = "https://toonigy.github.io/world-of-life/dashboard.html";
+        }
+
+        // Initialize Google Sign-In when the button is clicked
+        document.getElementById("google-login-button").onclick = function() {
+            gapi.load('auth2', function() {
+                gapi.auth2.init().then(function() {
+                    const auth2 = gapi.auth2.getAuthInstance();
+                    auth2.signIn().then(onSignIn);
+                });
+            });
+        };
+    </script>
+
+</body>
+</html>
