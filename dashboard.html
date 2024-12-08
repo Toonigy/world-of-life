@@ -3,108 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Life Sim - Dashboard</title>
+    <title>Your Dashboard</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            margin: 0;
-            padding: 0;
         }
-        .container {
-            margin-top: 50px;
+        .dashboard-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
-        h1 {
-            color: #4CAF50;
-        }
-        .setup-container, .dashboard-container {
-            display: none;
-        }
-        .setup-container.active, .dashboard-container.active {
-            display: block;
+        .dashboard-button:hover {
+            background-color: #45a049;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Character Setup Form -->
-        <div class="setup-container" id="setup-container">
-            <h1>Welcome to your Dashboard</h1>
-            <p>You haven't set up your character yet. Please fill in the details below:</p>
-            
-            <form id="setup-form">
-                <div>
-                    <label for="character-name">Character Name:</label><br>
-                    <input type="text" id="character-name" name="character-name" placeholder="Enter your character's name" required>
-                </div>
-                <div>
-                    <label for="gender">Gender:</label><br>
-                    <select id="gender" name="gender" required>
-                        <option value="">Select gender</option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="profile-pic">Upload Profile Picture:</label><br>
-                    <input type="file" id="profile-pic" name="profile-pic" accept="image/*" required>
-                </div>
-                <button type="submit">Save Character</button>
-            </form>
-        </div>
+    <h1>Welcome to Your Dashboard!</h1>
+    <p>Set up your character and start your adventure!</p>
 
-        <!-- Dashboard Container (Regular Dashboard) -->
-        <div class="dashboard-container" id="dashboard-container">
-            <h1>Welcome to Your Dashboard!</h1>
-            <p>Enjoy the game and manage your life simulation!</p>
-        </div>
+    <div>
+        <h3>Your Character Setup:</h3>
+        <button class="dashboard-button" onclick="location.href='https://toonigy.github.io/world-of-life/setup.html'">Complete Your Character Setup</button>
+    </div>
+
+    <div>
+        <h3>Romance System:</h3>
+        <!-- Romance Button -->
+        <button class="dashboard-button" onclick="location.href='https://toonigy.github.io/world-of-life/romance.html'">Start Your Romance Journey</button>
     </div>
 
     <script>
-        window.onload = function() {
-            const user = JSON.parse(localStorage.getItem("user"));
-            const character = JSON.parse(localStorage.getItem("character"));
-
-            if (!user) {
-                // If the user isn't logged in, redirect to login page
-                window.location.href = "index.html";
-                return;
-            }
-
-            if (!character) {
-                // If character hasn't been set up yet, show the setup form
-                document.getElementById("setup-container").classList.add("active");
-            } else {
-                // If character is set up, show the regular dashboard
-                document.getElementById("dashboard-container").classList.add("active");
-            }
-
-            // Handle character setup form submission
-            document.getElementById("setup-form").addEventListener("submit", function(event) {
-                event.preventDefault();
-
-                const characterName = document.getElementById("character-name").value;
-                const gender = document.getElementById("gender").value;
-                const profilePic = document.getElementById("profile-pic").files[0];
-
-                if (characterName && gender && profilePic) {
-                    // Save character info to localStorage
-                    const characterData = {
-                        name: characterName,
-                        gender: gender,
-                        profilePic: URL.createObjectURL(profilePic)
-                    };
-                    localStorage.setItem("character", JSON.stringify(characterData));
-
-                    // After setup, show the regular dashboard
-                    document.getElementById("setup-container").classList.remove("active");
-                    document.getElementById("dashboard-container").classList.add("active");
-                } else {
-                    alert("Please fill in all the details.");
-                }
-            });
-        }
+        // Add any script here for further dashboard-related actions if needed
     </script>
 </body>
 </html>
