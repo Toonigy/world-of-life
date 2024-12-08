@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House Shop</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .house-card {
+            display: inline-block;
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            width: 200px;
+        }
+        .house-card h3 {
+            font-size: 18px;
+        }
+        .house-card p {
+            font-size: 14px;
+        }
+        .buy-button {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .buy-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to the House Shop</h1>
+    <p>Choose your dream house!</p>
+
+    <div id="house-list">
+        <!-- List of available houses will be populated here -->
+    </div>
+
+    <script>
+        // Sample data for houses (this could be extended or loaded from an API)
+        const houses = [
+            { name: "Tiny Cottage", price: 1000, description: "A small and cozy home." },
+            { name: "Modern Apartment", price: 5000, description: "A stylish and modern apartment." },
+            { name: "Luxury Mansion", price: 20000, description: "A grand mansion with all the luxuries." }
+        ];
+
+        // Function to display available houses
+        function displayHouses() {
+            const houseListContainer = document.getElementById("house-list");
+            houseListContainer.innerHTML = ""; // Clear any existing houses
+
+            houses.forEach(house => {
+                const houseCard = document.createElement("div");
+                houseCard.classList.add("house-card");
+
+                houseCard.innerHTML = `
+                    <h3>${house.name}</h3>
+                    <p>Price: $${house.price}</p>
+                    <p>${house.description}</p>
+                    <button class="buy-button" onclick="buyHouse('${house.name}', ${house.price})">Buy</button>
+                `;
+                houseListContainer.appendChild(houseCard);
+            });
+        }
+
+        // Function to buy a house
+        function buyHouse(houseName, housePrice) {
+            const playerMoney = parseInt(localStorage.getItem("money"));
+
+            if (playerMoney >= housePrice) {
+                // Deduct money from the player
+                localStorage.setItem("money", playerMoney - housePrice);
+
+                // Save the house the player bought in localStorage
+                localStorage.setItem("house", houseName);
+
+                alert(`You bought the ${houseName}!`);
+
+                // Redirect to the dashboard
+                window.location.href = "https://toonigy.github.io/world-of-life/dashboard.html";
+            } else {
+                alert("You don't have enough money to buy this house.");
+            }
+        }
+
+        // Display available houses when the page loads
+        window.onload = function() {
+            displayHouses();
+        };
+    </script>
+</body>
+</html>
