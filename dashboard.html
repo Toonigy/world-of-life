@@ -21,15 +21,9 @@
         .dashboard-button:hover {
             background-color: #45a049;
         }
-        .money-display {
+        .marital-status {
             font-size: 1.5em;
-            color: #4CAF50;
             margin-top: 20px;
-        }
-        .user-id {
-            font-size: 1.2em;
-            color: #333;
-            margin-top: 10px;
         }
     </style>
 </head>
@@ -37,67 +31,29 @@
     <h1>Welcome to Your Dashboard!</h1>
     <p>Set up your character and start your adventure!</p>
 
+    <!-- Buttons for various actions -->
     <div>
-        <h3>Your Character Setup:</h3>
-        <button class="dashboard-button" onclick="location.href='https://toonigy.github.io/world-of-life/setup.html'">Complete Your Character Setup</button>
-    </div>
-
-    <div>
-        <h3>Romance System:</h3>
-        <button class="dashboard-button" onclick="location.href='https://toonigy.github.io/world-of-life/romance.html'">Start Your Romance Journey</button>
+        <h3>Propose Marriage:</h3>
+        <button class="dashboard-button" onclick="proposeTo('user_1733620897709')">Propose to Jordan</button>
     </div>
 
     <div>
-        <h3>Career System:</h3>
-        <button class="dashboard-button" onclick="location.href='https://toonigy.github.io/world-of-life/career_progress.html'">Check Career Progress</button>
+        <h3>Marriage Actions:</h3>
+        <button class="dashboard-button" onclick="acceptProposal()">Accept Proposal</button>
+        <button class="dashboard-button" onclick="rejectProposal()">Reject Proposal</button>
+        <button class="dashboard-button" onclick="divorce()">Divorce</button>
     </div>
 
-    <div>
-        <h3>House Shop:</h3>
-        <button class="dashboard-button" onclick="location.href='https://toonigy.github.io/world-of-life/house_shop.html'">Visit the House Shop</button>
+    <div class="marital-status" id="marital-status">
+        <!-- Display marital status -->
+        <p>Checking marital status...</p>
     </div>
 
-    <div>
-        <h3>Find Other Users:</h3>
-        <button class="dashboard-button" onclick="location.href='https://toonigy.github.io/world-of-life/find_users.html'">Find Other Players</button>
-    </div>
-
-    <div>
-        <h3>Your House:</h3>
-        <p id="house-info">You don't own a house yet.</p>
-    </div>
-
-    <div class="money-display">
-        <p>Your Money: $<span id="money-display">0</span></p>
-    </div>
-
-    <div class="user-id">
-        <p>Your User ID: <span id="user-id"></span></p>
-    </div>
-
+    <script src="marriage.js"></script>
     <script>
-        // Ensure the user ID is only generated once
         window.onload = function() {
-            const userMoney = localStorage.getItem("userMoney") || 0;
-            const userID = localStorage.getItem("userID");
-
-            // If the user doesn't have an ID, generate one
-            if (!userID) {
-                const newUserID = 'user_' + Date.now();  // Use timestamp for a unique ID
-                localStorage.setItem("userID", newUserID);
-            }
-
-            // Display the user's money and user ID
-            document.getElementById("money-display").innerText = userMoney;
-            document.getElementById("user-id").innerText = localStorage.getItem("userID");
-            
-            // Display the house info if the user has one
-            const house = localStorage.getItem("house");
-            if (house) {
-                document.getElementById("house-info").innerText = `You own a ${house}.`;
-            } else {
-                document.getElementById("house-info").innerText = "You don't own a house yet.";
-            }
+            // Check if the user is married
+            checkMarriageStatus();
         };
     </script>
 </body>
