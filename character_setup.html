@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Setup</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        label {
+            margin-right: 10px;
+        }
+        .button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Character Setup</h1>
+    <form id="setup-form">
+        <label for="gender">Choose your gender:</label>
+        <select id="gender">
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Non-Binary">Non-Binary</option>
+            <option value="Other">Other</option>
+        </select>
+        <br><br>
+
+        <button type="submit" class="button">Save and Go to Dashboard</button>
+    </form>
+
+    <script>
+        document.getElementById("setup-form").onsubmit = function(event) {
+            event.preventDefault();
+
+            const gender = document.getElementById("gender").value;
+            localStorage.setItem("userGender", gender);
+
+            // Now redirect to the dashboard after saving the gender
+            window.location.href = "dashboard.html";
+        };
+    </script>
+</body>
+</html>
