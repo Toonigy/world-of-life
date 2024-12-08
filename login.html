@@ -64,7 +64,9 @@
         // Initialize Google Sign-In when the button is clicked
         document.getElementById("google-login-button").onclick = function() {
             gapi.load('auth2', function() {
-                gapi.auth2.init().then(function() {
+                gapi.auth2.init({
+                    client_id: '461434289159-ga3odshnftie2n8g15tl28lgrgtoriib.apps.googleusercontent.com'  // Replace with your actual Google OAuth Client ID
+                }).then(function() {
                     const auth2 = gapi.auth2.getAuthInstance();
                     auth2.signIn().then(onSignIn);
                 });
