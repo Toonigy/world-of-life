@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Your Career</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .career-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .career-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Choose Your Career Path</h1>
+    <p>Select your career and begin your journey!</p>
+
+    <div>
+        <button class="career-button" onclick="chooseCareer('doctor')">Doctor</button>
+        <button class="career-button" onclick="chooseCareer('artist')">Artist</button>
+        <button class="career-button" onclick="chooseCareer('engineer')">Engineer</button>
+    </div>
+
+    <script>
+        // Function to select a career and store it in localStorage
+        function chooseCareer(career) {
+            let careerData = {
+                "job": career,
+                "level": 1,
+                "experience": 0,
+                "salary": 500
+            };
+            localStorage.setItem("career", JSON.stringify(careerData));
+
+            alert(`You have chosen to be a ${career}. Good luck!`);
+
+            // Redirect to the dashboard after career selection
+            window.location.href = "https://toonigy.github.io/world-of-life/dashboard.html";
+        }
+    </script>
+</body>
+</html>
